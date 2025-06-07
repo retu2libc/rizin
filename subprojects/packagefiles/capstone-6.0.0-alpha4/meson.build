@@ -64,6 +64,10 @@ cs_files = [
   'arch/TMS320C64x/TMS320C64xInstPrinter.c',
   'arch/TMS320C64x/TMS320C64xMapping.c',
   'arch/TMS320C64x/TMS320C64xModule.c',
+  'arch/TMS320C64x/TMS320C67xDisassembler.c',
+  'arch/TMS320C64x/TMS320C67xInstPrinter.c',
+  'arch/TMS320C64x/TMS320C67xMapping.c',
+  'arch/TMS320C64x/TMS320C67xModule.c',
   'arch/X86/X86ATTInstPrinter.c',
   'arch/X86/X86Disassembler.c',
   'arch/X86/X86DisassemblerDecoder.c',
@@ -109,6 +113,7 @@ libcapstone_c_args = [
   '-DCAPSTONE_HAS_SYSTEMZ',
   '-DCAPSTONE_HAS_XCORE',
   '-DCAPSTONE_HAS_TMS320C64X',
+  '-DCAPSTONE_HAS_TMS320C67X',
   '-DCAPSTONE_HAS_TRICORE',
 ]
 

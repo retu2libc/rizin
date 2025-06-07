@@ -7,8 +7,10 @@
 
 #include <tms320/c55x_plus/c55plus_analysis.h>
 #include <tms320/c64x/c64x.h>
+#include <tms320/c67x/c67x.h>
 
 typedef struct tms320_ctx_t {
+	void *c67x;
 	void *c64x;
 	tms320_dasm_t engine;
 } Tms320Context;
@@ -77,6 +79,8 @@ int tms320_analysis_op(RzAnalysis *analysis, RzAnalysisOp *op, ut64 addr, const 
 		return tms320_c55x_plus_op(analysis, op, addr, buf, len);
 	} else if (analysis->cpu && rz_str_casecmp(analysis->cpu, "c64x") == 0) {
 		return tms320_c64x_op(analysis, op, addr, buf, len, mask, context->c64x);
+	} else if (analysis->cpu && rz_str_casecmp(analysis->cpu, "c67x") == 0) {
+		return tms320_c67x_op(analysis, op, addr, buf, len, mask, context->c67x);
 	}
 	return tms320_c55x_op(analysis, op, addr, buf, len, &context->engine);
 }
@@ -88,6 +92,7 @@ static bool tms320_analysis_init(void **user) {
 	}
 
 	context->c64x = tms320_c64x_new();
+	context->c67x = tms320_c67x_new();
 	tms320_dasm_init(&context->engine);
 	*user = context;
 	return true;
@@ -98,6 +103,7 @@ static bool tms320_analysis_fini(void *user) {
 	Tms320Context *context = (Tms320Context *)user;
 
 	tms320_c64x_free(context->c64x);
+	tms320_c67x_free(context->c67x);
 	tms320_dasm_fini(&context->engine);
 	free(context);
 	return true;

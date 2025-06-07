@@ -10,6 +10,7 @@
 
 typedef struct tms_cs_context_t {
 	void *c64x;
+	void *c67x;
 	tms320_dasm_t engine;
 } TmsContext;
 
@@ -23,6 +24,8 @@ static int tms320_disassemble(RzAsm *a, RzAsmOp *op, const ut8 *buf, int len) {
 		tms320_f_set_cpu(&ctx->engine, TMS320_F_CPU_C55X);
 	} else if (a->cpu && !rz_str_casecmp(a->cpu, "c64x")) {
 		return tms320_c64x_disassemble(a, op, buf, len, ctx->c64x);
+	} else if (a->cpu && rz_str_casecmp(a->cpu, "c67x") == 0) {
+		return tms320_c67x_disassemble(a, op, buf, len, ctx->c67x);
 	} else {
 		rz_asm_op_set_asm(op, "unknown asm.cpu");
 		return op->size = -1;
@@ -39,6 +42,7 @@ static bool tms320_init(void **user) {
 	}
 
 	ctx->c64x = tms320_c64x_new();
+	ctx->c67x = tms320_c67x_new();
 	tms320_dasm_init(&ctx->engine);
 	*user = ctx;
 	return true;
@@ -48,6 +52,7 @@ static bool tms320_fini(void *user) {
 	rz_return_val_if_fail(user, false);
 	TmsContext *ctx = (TmsContext *)user;
 	tms320_c64x_free(ctx->c64x);
+	tms320_c67x_free(ctx->c67x);
 	tms320_dasm_fini(&ctx->engine);
 	free(ctx);
 	return true;
@@ -55,10 +60,12 @@ static bool tms320_fini(void *user) {
 
 static char *tms320_mnemonics(RzAsm *a, int id, bool json) {
 	TmsContext *ctx = (TmsContext *)a->plugin_data;
-	if (!a->cpu || rz_str_casecmp(a->cpu, "c64x")) {
-		return NULL;
+	if (!rz_str_casecmp(a->cpu, "c64x")) {
+		return tms320_c64x_mnemonics(a, id, json, ctx->c64x);
+	} else if (!rz_str_casecmp(a->cpu, "c67x")) {
+		return tms320_c67x_mnemonics(a, id, json, ctx->c67x);
 	}
-	return tms320_c64x_mnemonics(a, id, json, ctx->c64x);
+	return NULL;
 }
 
 static char **tms320_cpu_descriptions() {
@@ -67,6 +74,7 @@ static char **tms320_cpu_descriptions() {
 		"c55x", "Texas Instruments TMS320C55x DSP family",
 		"c55x+", "Texas Instruments TMS320C55x+ DSP family",
 		"c64x", "Texas Instruments TMS320C64x DSP family",
+		"c67x", "Texas Instruments TMS320C67x DSP family",
 		NULL
 	};
 	return cpu_desc;
@@ -75,8 +83,8 @@ static char **tms320_cpu_descriptions() {
 RzAsmPlugin rz_asm_plugin_tms320 = {
 	.name = "tms320",
 	.arch = "tms320",
-	.cpus = "c54x,c55x,c55x+,c64x",
-	.desc = "Texas Instruments TMS320 DSP family (c54x,c55x,c55x+,c64x) disassembler",
+	.cpus = "c54x,c55x,c55x+,c64x,c67x",
+	.desc = "Texas Instruments TMS320 DSP family (c54x,c55x,c55x+,c64x,c67x) disassembler",
 	.license = "LGPL3",
 	.bits = 32,
 	.endian = RZ_SYS_ENDIAN_LITTLE | RZ_SYS_ENDIAN_BIG,

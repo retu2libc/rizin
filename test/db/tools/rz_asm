@@ -702,6 +702,7 @@ c54x            Texas Instruments TMS320C54x DSP family
 c55x            Texas Instruments TMS320C55x DSP family
 c55x+           Texas Instruments TMS320C55x+ DSP family
 c64x            Texas Instruments TMS320C64x DSP family
+c67x            Texas Instruments TMS320C67x DSP family
 tricore         Generic TriCore CPU family by Infineon
 EOF
 RUN
