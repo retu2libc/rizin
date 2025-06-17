@@ -194,7 +194,6 @@ int tms320_c67x_op(RzAnalysis *a, RzAnalysisOp *op, ut64 addr, const ut8 *buf, i
 			op->type = RZ_ANALYSIS_OP_TYPE_ILL;
 			break;
 		case TMS320C67X_INS_AND:
-		case TMS320C67X_INS_ANDN:
 			op->type = RZ_ANALYSIS_OP_TYPE_AND;
 			break;
 		case TMS320C67X_INS_NOT:
@@ -203,21 +202,10 @@ int tms320_c67x_op(RzAnalysis *a, RzAnalysisOp *op, ut64 addr, const ut8 *buf, i
 		case TMS320C67X_INS_NEG:
 			op->type = RZ_ANALYSIS_OP_TYPE_NOT;
 			break;
-		case TMS320C67X_INS_SWAP2:
-		case TMS320C67X_INS_SWAP4:
-			op->type = RZ_ANALYSIS_OP_TYPE_MOV;
-			op->type = RZ_ANALYSIS_OP_TYPE_MOV;
-			break;
-		case TMS320C67X_INS_BNOP:
 		case TMS320C67X_INS_NOP:
 			op->type = RZ_ANALYSIS_OP_TYPE_NOP;
 			break;
-		case TMS320C67X_INS_CMPEQ:
-		case TMS320C67X_INS_CMPEQ2:
-		case TMS320C67X_INS_CMPEQ4:
 		case TMS320C67X_INS_CMPGT:
-		case TMS320C67X_INS_CMPGT2:
-		case TMS320C67X_INS_CMPGTU4:
 		case TMS320C67X_INS_CMPLT:
 		case TMS320C67X_INS_CMPLTU:
 			op->type = RZ_ANALYSIS_OP_TYPE_CMP;
@@ -232,17 +220,12 @@ int tms320_c67x_op(RzAnalysis *a, RzAnalysisOp *op, ut64 addr, const ut8 *buf, i
 		case TMS320C67X_INS_LDDW:
 		case TMS320C67X_INS_LDH:
 		case TMS320C67X_INS_LDHU:
-		case TMS320C67X_INS_LDNDW:
-		case TMS320C67X_INS_LDNW:
 		case TMS320C67X_INS_LDW:
 		case TMS320C67X_INS_LMBD:
 			op->type = RZ_ANALYSIS_OP_TYPE_LOAD;
 			break;
 		case TMS320C67X_INS_STB:
-		case TMS320C67X_INS_STDW:
 		case TMS320C67X_INS_STH:
-		case TMS320C67X_INS_STNDW:
-		case TMS320C67X_INS_STNW:
 		case TMS320C67X_INS_STW:
 			op->type = RZ_ANALYSIS_OP_TYPE_STORE;
 			break;
@@ -252,9 +235,7 @@ int tms320_c67x_op(RzAnalysis *a, RzAnalysisOp *op, ut64 addr, const ut8 *buf, i
 		case TMS320C67X_INS_SSUB:
 		case TMS320C67X_INS_SUB:
 		case TMS320C67X_INS_SUB2:
-		case TMS320C67X_INS_SUB4:
 		case TMS320C67X_INS_SUBAB:
-		case TMS320C67X_INS_SUBABS4:
 		case TMS320C67X_INS_SUBAH:
 		case TMS320C67X_INS_SUBAW:
 		case TMS320C67X_INS_SUBC:
@@ -269,12 +250,8 @@ int tms320_c67x_op(RzAnalysis *a, RzAnalysisOp *op, ut64 addr, const ut8 *buf, i
 		case TMS320C67X_INS_ADDAH:
 		case TMS320C67X_INS_ADDAW:
 		case TMS320C67X_INS_ADDK:
-		case TMS320C67X_INS_ADDKPC:
 		case TMS320C67X_INS_ADDU:
 		case TMS320C67X_INS_SADD:
-		case TMS320C67X_INS_SADD2:
-		case TMS320C67X_INS_SADDU4:
-		case TMS320C67X_INS_SADDUS2:
 			op->type = RZ_ANALYSIS_OP_TYPE_ADD;
 			break;
 		}
