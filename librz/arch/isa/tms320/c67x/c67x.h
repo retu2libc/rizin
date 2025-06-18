@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2025 retu2libc <cwrogg@umich.edu>
+// SPDX-FileCopyrightText: 2025 Christopher Wrogg <cwrogg@umich.edu>
 // SPDX-License-Identifier: LGPL-3.0-only
 
 #ifndef TMS320_C67X_CAPSTONE_H
