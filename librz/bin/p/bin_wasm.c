@@ -320,8 +320,9 @@ static RzBuffer *create(RzBin *bin, const ut8 *code, int codelen, const ut8 *dat
 
 RzBinPlugin rz_bin_plugin_wasm = {
 	.name = "wasm",
-	.desc = "WebAssembly bin plugin",
+	.desc = "WebAssembly",
 	.license = "MIT",
+	.author = "pancake",
 	.load_buffer = &load_buffer,
 	.size = &size,
 	.destroy = &destroy,

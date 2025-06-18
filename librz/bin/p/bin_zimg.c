@@ -56,8 +56,9 @@ static RzBinInfo *info(RzBinFile *bf) {
 
 RzBinPlugin rz_bin_plugin_zimg = {
 	.name = "zimg",
-	.desc = "zimg format bin plugin",
+	.desc = "ZIMG format binary",
 	.license = "LGPL3",
+	.author = "ninjahacker",
 	.get_sdb = &get_sdb,
 	.load_buffer = &load_buffer,
 	.check_buffer = &check_buffer,

@@ -457,8 +457,9 @@ static bool mdmp_check_buffer(RzBuffer *b) {
 
 RzBinPlugin rz_bin_plugin_mdmp = {
 	.name = "mdmp",
-	.desc = "Windows MiniDump plugin",
+	.desc = "Windows MiniDump",
 	.license = "LGPL3",
+	.author = "Davis",
 	.destroy = &mdmp_destroy,
 	.entries = mdmp_entries,
 	.get_sdb = &mdmp_get_sdb,

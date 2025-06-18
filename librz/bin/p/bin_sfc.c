@@ -272,8 +272,9 @@ static RzPVector /*<RzBinAddr *>*/ *entries(RzBinFile *bf) { // Should be 3 offs
 
 RzBinPlugin rz_bin_plugin_sfc = {
 	.name = "sfc",
-	.desc = "Super NES / Super Famicom ROM file",
+	.desc = "Super NES / Super Famicom ROM",
 	.license = "LGPL3",
+	.author = "usrshare",
 	.load_buffer = &load_buffer,
 	.check_buffer = &check_buffer,
 	.entries = &entries,

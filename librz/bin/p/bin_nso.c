@@ -390,8 +390,9 @@ static RzBinInfo *info(RzBinFile *bf) {
 
 RzBinPlugin rz_bin_plugin_nso = {
 	.name = "nso",
-	.desc = "Nintendo Switch NSO0 binaries",
+	.desc = "Nintendo Switch NSO",
 	.license = "MIT",
+	.author = "rkx1209",
 	.load_buffer = &load_buffer,
 	.destroy = &destroy,
 	.check_buffer = &check_buffer,

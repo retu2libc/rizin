@@ -231,8 +231,9 @@ static RzPVector /*<RzBinMap *>*/ *maps(RzBinFile *bf) {
 
 RzBinPlugin rz_bin_plugin_dex = {
 	.name = "dex",
-	.desc = "dex bin plugin",
+	.desc = "DEX (Dalvik Executable)",
 	.license = "LGPL3",
+	.author = "deroad",
 	.get_sdb = &get_sdb,
 	.load_buffer = &load_buffer,
 	.destroy = &destroy,

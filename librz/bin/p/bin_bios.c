@@ -134,8 +134,9 @@ static RzPVector /*<RzBinAddr *>*/ *entries(RzBinFile *bf) {
 
 RzBinPlugin rz_bin_plugin_bios = {
 	.name = "bios",
-	.desc = "BIOS bin plugin",
+	.desc = "BIOS binary",
 	.license = "LGPL",
+	.author = "pancake",
 	.load_buffer = &load_buffer,
 	.destroy = &destroy,
 	.check_buffer = &check_buffer,

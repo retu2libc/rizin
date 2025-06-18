@@ -603,7 +603,10 @@ RZ_API bool rz_core_bin_apply_config(RzCore *r, RzBinFile *binfile) {
 	if (info->default_cc && rz_analysis_cc_exist(r->analysis, info->default_cc)) {
 		rz_config_set(r->config, "analysis.cc", info->default_cc);
 	}
-	char *types_dir = rz_path_system(RZ_SDB_TYPES);
+	char *types_dir = rz_path_system(r->sys_path, RZ_SDB_TYPES);
+	if (!types_dir) {
+		return false;
+	}
 	char *spath = rz_file_path_join(types_dir, "spec.sdb");
 	free(types_dir);
 	if (spath && rz_file_exists(spath)) {
@@ -697,7 +700,10 @@ RZ_API bool rz_core_bin_apply_dwarf(RzCore *core, RzBinFile *binfile) {
 	}
 
 	rz_type_db_purge(core->analysis->typedb);
-	char *types_dir = rz_path_system(RZ_SDB_TYPES);
+	char *types_dir = rz_path_system(core->sys_path, RZ_SDB_TYPES);
+	if (!types_dir) {
+		return false;
+	}
 	rz_type_db_reload(core->analysis->typedb, types_dir);
 	free(types_dir);
 
@@ -1206,8 +1212,11 @@ static void set_bin_relocs(RzCore *r, RzBinObject *o, RzBinReloc *reloc, bool va
 				if (rz_file_exists(filename)) {
 					*db = sdb_new(NULL, filename, 0);
 				} else {
-					char *formats_dir = rz_path_system(RZ_SDB_FORMAT);
 					free(filename);
+					char *formats_dir = rz_path_system(r->sys_path, RZ_SDB_FORMAT);
+					if (!formats_dir) {
+						return;
+					}
 					filename = rz_str_newf(RZ_JOIN_3_PATHS("%s", "dll", "%s.sdb"), formats_dir, module);
 					free(formats_dir);
 					if (rz_file_exists(filename)) {
@@ -4940,7 +4949,7 @@ out:
 RZ_IPI RzCmdStatus rz_core_bin_plugin_print(const RzBinPlugin *bp, RzCmdStateOutput *state) {
 	rz_return_val_if_fail(bp && state, RZ_CMD_STATUS_ERROR);
 
-	rz_cmd_state_output_set_columnsf(state, "sss", "type", "name", "description");
+	rz_cmd_state_output_set_columnsf(state, "sssss", "name", "license", "author", "description", "version");
 
 	switch (state->mode) {
 	case RZ_OUTPUT_MODE_QUIET:
@@ -4962,13 +4971,18 @@ RZ_IPI RzCmdStatus rz_core_bin_plugin_print(const RzBinPlugin *bp, RzCmdStateOut
 		pj_end(state->d.pj);
 		break;
 	case RZ_OUTPUT_MODE_STANDARD:
-		rz_cons_printf("bin  %-11s %s (%s) %s %s\n",
-			bp->name, bp->desc, bp->license ? bp->license : "???",
-			bp->version ? bp->version : "",
-			bp->author ? bp->author : "");
+		rz_cons_printf("%-12s %-9s %-15s %-38s %s\n", bp->name,
+			bp->license ? bp->license : "???",
+			bp->author ? bp->author : "",
+			bp->desc,
+			bp->version ? bp->version : "");
 		break;
 	case RZ_OUTPUT_MODE_TABLE:
-		rz_table_add_rowf(state->d.t, "sss", "bin", bp->name, bp->desc);
+		rz_table_add_rowf(state->d.t, "sssss", bp->name,
+			bp->license ? bp->license : "",
+			bp->author ? bp->author : "",
+			bp->desc,
+			bp->version ? bp->version : "");
 		break;
 	default:
 		rz_warn_if_reached();
@@ -4982,7 +4996,7 @@ RZ_IPI RzCmdStatus rz_core_binxtr_plugin_print(const RzBinXtrPlugin *bx, RzCmdSt
 
 	const char *name = NULL;
 
-	rz_cmd_state_output_set_columnsf(state, "sss", "type", "name", "description");
+	rz_cmd_state_output_set_columnsf(state, "ssss", "name", "license", "author", "description");
 	switch (state->mode) {
 	case RZ_OUTPUT_MODE_QUIET:
 		rz_cons_println(bx->name);
@@ -4996,11 +5010,16 @@ RZ_IPI RzCmdStatus rz_core_binxtr_plugin_print(const RzBinXtrPlugin *bx, RzCmdSt
 		break;
 	case RZ_OUTPUT_MODE_STANDARD:
 		name = strncmp(bx->name, "xtr.", 4) ? bx->name : bx->name + 3;
-		rz_cons_printf("xtr  %-11s %s (%s)\n", name,
-			bx->desc, bx->license ? bx->license : "???");
+		rz_cons_printf("%-12s %-9s %-15s %s\n", name,
+			bx->license ? bx->license : "???",
+			"",
+			bx->desc);
 		break;
 	case RZ_OUTPUT_MODE_TABLE:
-		rz_table_add_rowf(state->d.t, "sss", "xtr", bx->name, bx->desc);
+		rz_table_add_rowf(state->d.t, "ssss", bx->name,
+			bx->license,
+			"",
+			bx->desc);
 		break;
 	default:
 		rz_warn_if_reached();

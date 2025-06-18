@@ -151,8 +151,9 @@ static bool check_buffer(RzBuffer *b) {
 
 RzBinPlugin rz_bin_plugin_te = {
 	.name = "te",
-	.desc = "TE bin plugin", // Terse Executable format
+	.desc = "TE (Terse Executable)", // Terse Executable format
 	.license = "LGPL3",
+	.author = "xvilka",
 	.get_sdb = &get_sdb,
 	.load_buffer = &load_buffer,
 	.destroy = &destroy,

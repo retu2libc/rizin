@@ -258,8 +258,9 @@ static RzPVector /*<RzBinReloc *>*/ *relocs(RzBinFile *bf) {
 
 RzBinPlugin rz_bin_plugin_mz = {
 	.name = "mz",
-	.desc = "MZ bin plugin",
+	.desc = "MZ (DOS MZ Executable)",
 	.license = "MIT",
+	.author = "nodepad",
 	.get_sdb = &get_sdb,
 	.load_buffer = &load,
 	.destroy = &destroy,

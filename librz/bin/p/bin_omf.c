@@ -164,8 +164,9 @@ static ut64 get_vaddr(RzBinFile *bf, ut64 baddr, ut64 paddr, ut64 vaddr) {
 
 RzBinPlugin rz_bin_plugin_omf = {
 	.name = "omf",
-	.desc = "omf bin plugin",
+	.desc = "OMF (Object Module Format)",
 	.license = "LGPL3",
+	.author = "ampotos",
 	.load_buffer = &load_buffer,
 	.destroy = &destroy,
 	.check_buffer = &check_buffer,

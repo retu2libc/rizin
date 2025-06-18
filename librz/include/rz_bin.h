@@ -282,6 +282,20 @@ typedef struct rz_bin_info_t {
 } RzBinInfo;
 
 typedef struct rz_bin_file_load_options_t {
+	/**
+	 * \brief This flag is a work around for the inconsistent base addresses behavior of ELF objects.
+	 * The ELF loader doesn't respect the RzBinObjectLoadOptions->baseaddr
+	 * parameter when it loads an ELF file.
+	 * Instead it either assumes a base address of: 0, the first executable section or, in case of relocatable ELFs,
+	 * RZ_BIN_ELF_DEFAULT_BADDR_RELOC.
+	 *
+	 * This is annoyingly wrong, but fixing it breaks too many other things in Rizin.
+	 * Because it was just built around it. And refactoring/replacing the old ELF module is
+	 * no priority currently.
+	 * So here we go, this flags makes Elf_(rz_bin_elf_get_baddr) always return the base address
+	 * below. Assuming these BinLoaderOtions were passed to it.
+	 */
+	bool force_elf_to_use_baddr;
 	ut64 baseaddr; ///< where the linker maps the binary in memory
 	ut64 loadaddr; ///< starting physical address to read from the target file
 	bool patch_relocs; ///< ask the bin plugin to fill relocs with valid contents for analysis
@@ -854,7 +868,9 @@ RZ_API RzBinClassField *rz_bin_class_field_new(ut64 vaddr, ut64 paddr, const cha
 RZ_API void rz_bin_class_field_free(RZ_NULLABLE RzBinClassField *field);
 RZ_API void rz_bin_class_free(RZ_NULLABLE RzBinClass *k);
 
+RZ_API RZ_OWN RzBinVirtualFile *rz_bin_virtual_file_clone(RZ_BORROW RZ_NONNULL RzBinVirtualFile *vfile);
 RZ_API void rz_bin_virtual_file_free(RZ_NULLABLE RzBinVirtualFile *vfile);
+RZ_API RZ_OWN RzBinMap *rz_bin_map_clone(RZ_NONNULL RzBinMap *map);
 RZ_API void rz_bin_map_free(RZ_NULLABLE RzBinMap *map);
 RZ_API bool rz_bin_map_is_data(RZ_NONNULL const RzBinMap *map);
 RZ_API RZ_OWN RzPVector /*<RzBinMap *>*/ *rz_bin_maps_of_file_sections(RZ_NONNULL RzBinFile *binfile);

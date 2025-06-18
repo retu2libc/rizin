@@ -141,7 +141,7 @@ static void rz_hash_show_algorithms(RzHashContext *ctx) {
 	const RzHashPlugin *rmdp;
 	rz_list_foreach (plugin_list, it, rmdp) {
 		snprintf(flags, sizeof(flags), "____h%c", rmdp->support_hmac ? 'm' : '_');
-		printf("%6s %-14s %-10s %s\n", flags, rmdp->name, rmdp->license, rmdp->author);
+		printf("%6s %-14s %-10s %-30s %s\n", flags, rmdp->name, rmdp->license, rmdp->author, rmdp->description);
 	}
 	rz_list_free(plugin_list);
 	rz_iterator_free(iter);
@@ -157,14 +157,14 @@ static void rz_hash_show_algorithms(RzHashContext *ctx) {
 		} else {
 			snprintf(flags, sizeof(flags), "ED____");
 		}
-		printf("%6s %-14s %-10s %s\n", flags, rcp->name, rcp->license, rcp->author);
+		printf("%6s %-14s %-10s %-30s %s\n", flags, rcp->name, rcp->license, rcp->author, rcp->description);
 	}
 	printf(
 		"\n"
 		"flags legenda:\n"
 		"    E = encryption, D = decryption\n"
 		"    e = encoding, d = encoding\n"
-		"    h = hash, m = hmac\n");
+		"    h = hash/crc, m = hmac\n");
 }
 
 #define rz_hash_bool_error(x, o, f, ...) \
@@ -1223,15 +1223,22 @@ static void hash_load_plugins(RzHashContext *ctx) {
 	if (!RZ_STR_ISEMPTY(path)) {
 		rz_lib_opendir(rl, path, false);
 	}
-
+	RzPath *sys_path = rz_path_new();
+	if (!sys_path) {
+		free(path);
+		rz_lib_free(rl);
+		free(tmp);
+		return;
+	}
 	char *homeplugindir = rz_path_home_prefix(RZ_PLUGINS);
-	char *sysplugindir = rz_path_system(RZ_PLUGINS);
-	char *extraplugindir = rz_path_system(RZ_PLUGINS);
+	char *sysplugindir = rz_path_system(sys_path, RZ_PLUGINS);
+	char *extraplugindir = rz_path_system(sys_path, RZ_PLUGINS);
 	rz_lib_opendir(rl, homeplugindir, false);
 	rz_lib_opendir(rl, sysplugindir, false);
 	if (extraplugindir) {
 		rz_lib_opendir(rl, extraplugindir, false);
 	}
+	rz_path_free(sys_path);
 	free(homeplugindir);
 	free(sysplugindir);
 	free(extraplugindir);
@@ -1274,9 +1281,15 @@ RZ_API int rz_main_rz_hash(int argc, const char **argv) {
 			goto rz_main_rz_hash_end;
 		}
 		break;
-	case RZ_HASH_OP_VERSION:
-		rz_main_version_print("rz-hash");
+	case RZ_HASH_OP_VERSION: {
+		RzPath *sys_path = rz_path_new();
+		if (!sys_path) {
+			goto rz_main_rz_hash_end;
+		}
+		rz_main_version_print(sys_path, "rz-hash");
+		rz_path_free(sys_path);
 		break;
+	}
 	case RZ_HASH_OP_USAGE:
 		rz_hash_show_help(true);
 		goto rz_main_rz_hash_end;
