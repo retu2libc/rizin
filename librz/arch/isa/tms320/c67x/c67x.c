@@ -180,7 +180,6 @@ int tms320_c67x_op(RzAnalysis *a, RzAnalysisOp *op, ut64 addr, const ut8 *buf, i
 	}
 	// capstone-next
 	n = cs_disasm(ctx->handle, (const ut8 *)buf, len, addr, 1, &insn);
-	printf("cs_disasm returned %d\n", n);
 	if (n < 1) {
 		op->type = RZ_ANALYSIS_OP_TYPE_ILL;
 	} else {
@@ -205,8 +204,16 @@ int tms320_c67x_op(RzAnalysis *a, RzAnalysisOp *op, ut64 addr, const ut8 *buf, i
 		case TMS320C67X_INS_NOP:
 			op->type = RZ_ANALYSIS_OP_TYPE_NOP;
 			break;
+		case TMS320C67X_INS_CMPEQ:
+		case TMS320C67X_INS_CMPEQDP:
+		case TMS320C67X_INS_CMPEQSP:
 		case TMS320C67X_INS_CMPGT:
+		case TMS320C67X_INS_CMPGTDP:
+		case TMS320C67X_INS_CMPGTSP:
+		case TMS320C67X_INS_CMPGTU:
 		case TMS320C67X_INS_CMPLT:
+		case TMS320C67X_INS_CMPLTDP:
+		case TMS320C67X_INS_CMPLTSP:
 		case TMS320C67X_INS_CMPLTU:
 			op->type = RZ_ANALYSIS_OP_TYPE_CMP;
 			break;
@@ -232,25 +239,30 @@ int tms320_c67x_op(RzAnalysis *a, RzAnalysisOp *op, ut64 addr, const ut8 *buf, i
 		case TMS320C67X_INS_OR:
 			op->type = RZ_ANALYSIS_OP_TYPE_OR;
 			break;
-		case TMS320C67X_INS_SSUB:
 		case TMS320C67X_INS_SUB:
 		case TMS320C67X_INS_SUB2:
 		case TMS320C67X_INS_SUBAB:
 		case TMS320C67X_INS_SUBAH:
 		case TMS320C67X_INS_SUBAW:
 		case TMS320C67X_INS_SUBC:
+		case TMS320C67X_INS_SUBDP:
+		case TMS320C67X_INS_SUBSP:
 		case TMS320C67X_INS_SUBU:
+		case TMS320C67X_INS_SSUB:
 			op->type = RZ_ANALYSIS_OP_TYPE_SUB;
 			break;
 		case TMS320C67X_INS_ADD:
+		case TMS320C67X_INS_ADDAB:
 		case TMS320C67X_INS_ADD2:
 		case TMS320C67X_INS_ADD4:
-		case TMS320C67X_INS_ADDAB:
 		case TMS320C67X_INS_ADDAD:
 		case TMS320C67X_INS_ADDAH:
 		case TMS320C67X_INS_ADDAW:
+		case TMS320C67X_INS_ADDDP:
 		case TMS320C67X_INS_ADDK:
+		case TMS320C67X_INS_ADDSP:
 		case TMS320C67X_INS_ADDU:
+		case TMS320C67X_INS_ADDU2:
 		case TMS320C67X_INS_SADD:
 			op->type = RZ_ANALYSIS_OP_TYPE_ADD;
 			break;
